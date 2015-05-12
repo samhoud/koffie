@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Wie gaat koffie halen?</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+	<div class="knoppie list-knoppie"><i class="glyphicon glyphicon-menu-down"></i></div>
+	<div class="knoppie reload-knoppie"><i class="glyphicon glyphicon-refresh"></i></div>
+	<div class="deelnemers">
+		<div class="form-inline halert-form">
+			<div class="form-group">
+				<div class="input-group">
+	     			<input type="text" class="form-control" name="nieuwe-haler" id="nieuwe-halert" placeholder="Naam"><div class="input-group-addon add-halert"><i class="glyphicon glyphicon-plus"></i></div>
+	    		</div>  
+			</div>
+		</div>
+		<p> &nbsp;</p>
+		<ul class="list-group deelnemers-list">
+		 
+		</ul>
+		<button type="button" class="btn btn-success klaar-ermee">Klaar</button>
+	</div>
+
+	<div class="audio"></div>
+	
+    <!-- Header -->
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1>Wie haalt koffie?</h1>
+            <h3 class="spannend">.....</h3>
+            <div class="halert">Bas</div>
+            <br>
+            <a id="#klikklik" class="btn haal-btn btn-dark btn-lg">Wie o wie?</a>
+        </div>
+    </header>
+
+    <!-- About -->
+   
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/underscore.js"></script>
+    <script type="text/javascript">
+    koffieHalers = ['Benjamin', 'Leo', 'Bas', 'Monique'];
+    debugMode = false;
+    soundFile = "audio/koffie.mp3";
+
+    startButton = new Element('.haal-btn');
+    reloadButton = new Element('.haal-btn');
+    deelnemersForm = new Element('.deelnemers');
+    listButton = new Element('.list-knoppie');
+    klaarButton = new Element('.klaar-ermee');
+
+    menu = new Menu(listButton, deelnemersForm);
+  
+    $(document).ready(function(){
+        startButton.el().click(function(){
+       		renderStart(); 
+            var haler = Math.floor((Math.random() * (koffieHalers.length)));
+            
+            if(debugMode == true){
+            	console.log("Random nummer: " + haler);
+            	console.log("Naam: " + koffieHalers[haler]);
+            }else{
+            	spannendHe(koffieHalers[haler]); 
+        	}
+        });
+
+        listButton.el().click(function(){
+            menu.toggle();
+        });
+
+        $(".klaar-ermee").click(function(){
+            toggleMenu();
+        });
+
+         $(".reload-knoppie").click(function(){
+            renderReload();
+        });
+
+
+        $(".add-halert").click(function(){
+           	var naam = $('#nieuwe-halert').val();
+           	if(naam.length > 2)
+           	{
+           		addHalert(naam);
+           		$('#nieuwe-halert').val("");
+           		renderList();
+           	}
+        });
+
+
+        $(".deelnemers-list").on('click', '.remove-badge',function(){
+           var list_item = $(this).parent();
+           removeHalert(list_item.data('lijstnummer'));
+           list_item.remove();
+        });
+        renderList();
+    });
+
+   maakLijst = function(halertjes){
+   	koffieHalers = halertjes;
+   }
+
+   renderList = function(){
+   	var list = $(".deelnemers ul");
+   	list.html("");
+   	for (var i = 0; i < koffieHalers.length; i++) {
+   		var list_item = renderItem(i, koffieHalers[i]);
+   		list.append(list_item);
+   	};
+   }
+   renderItem = function(key, naam)
+   {
+   		return '<li class="list-group-item" data-lijstnummer="' + key +'"><span class="remove-badge"><i class="glyphicon glyphicon-trash"></i></span>'+ naam +'</li>';
+   }
+
+   renderStart = function(){
+   	 	hideMenu();
+        hideStartButton();
+        playSound(".audio",soundFile);
+   }
+
+	renderReload = function(){
+   	fadeOutHalert();
+    showSpannend();
+    showStartButton();
+    $(".reload-knoppie").hide();
+   }
+
+   toggleMenu = function() {
+   	  $(".list-knoppie").toggle();
+      $(".deelnemers").toggle();
+   }
+
+   hideMenu = function() {
+   		$(".list-knoppie").show();
+   		$(".deelnemers").hide();
+   }
+   showMenu = function() {
+   		$(".list-knoppie").hide();
+   		$(".deelnemers").show();
+   }
+
+   // show = function(selector){
+   //  $(selector).show();
+   // }
+
+   // hide = function(selector){
+   //  $(selector).hide();
+   // }
+
+   // invisible = function(selector){
+   //    $(selector).css('visibility', 'hidden');
+   // }
+
+   // visible = function(selector){
+   //    $(selector).css('visibility', 'visible');
+   // }
+
+   // fadeIn = function(selector){
+   //  $(selector).fadeIn();
+   // }
+
+   // fadeOut = function(selector){
+   //  $(selector).fadeOut();
+   // }
+
+   fadeInHalert = function(){
+   	 $(".halert").fadeIn();
+   }
+   fadeOutHalert = function(){
+   	 $(".halert").fadeOut();
+   }
+
+   showSpannend = function(){
+   	$(".spannend").show();
+   }
+
+   hideSpannend = function(){
+   	$(".spannend").hide();
+   }
+
+   hideStartButton = function() {
+ 
+   		$(".haal-btn").css('visibility', 'hidden');
+   }
+
+   showStartButton = function() {
+ 
+   		$(".haal-btn").css('visibility', 'visible');
+   }
+
+   hideReloadButton = function() {
+ 
+   		$(".reload-knoppie").hide();
+   }
+
+   showReloadButton = function() {
+   		$(".reload-knoppie").show();
+   }
+
+
+   removeHalert = function(lijstnummer)
+   {
+   
+   	 koffieHalers = _.reject(koffieHalers, function(name,key ){ return key == lijstnummer; });
+   }
+
+   addHalert = function(naam)
+   {
+   	koffieHalers.push(naam);
+   }
+
+
+    spannendHe = function(koffieHalert){
+        var count = 0;
+        for( var i =0; i <= 5; i++)
+        {
+            $(".spannend").animate({opacity: 0}, {duration: 610}).animate({opacity: 1}, 600, function(){
+               
+                if(count == 5)
+                {
+                    $(".spannend").fadeOut(function(){
+                        $(".halert").text(koffieHalert);
+                        fadeInHalert();
+                        showReloadButton();
+                    });
+                }
+                count++;
+            });
+            
+        }
+    }
+
+    function playSound(el,soundfileSrc) {
+      var embed = document.getElementById("embed");
+      if (!embed) {
+          var embed = document.createElement("embed");
+              embed.id= "embed";
+              embed.setAttribute("src", soundfileSrc);
+          $(el).append(embed);
+      } else {
+          embed.parentNode.removeChild(embed);
+      }
+  }
+
+  function Element(selector)
+  {
+    this.selector = selector;
+    this.element  = $(selector);
+  }
+
+   Element.prototype.el = function(){
+      return this.element;
+   }
+
+  Element.prototype.show = function(){
+    $(this.selector).show();
+   }
+
+   Element.prototype.hide = function(){
+    $(this.selector).hide();
+   }
+
+   Element.prototype.invisible = function(){
+      $(this.selector).css('visibility', 'hidden');
+   }
+
+   Element.prototype.visible = function(){
+      $(this.selector).css('visibility', 'visible');
+   }
+
+   Element.prototype.fadeIn = function(){
+    $(this.selector).fadeIn();
+   }
+
+   Element.prototype.fadeOut = function(){
+    $(this.selector).fadeOut();
+   }
+
+  function Menu(element1, element2)
+  {
+    this.element1 = element1;
+    this.element2 = element2;
+  }
+
+  Menu.prototype.toggle = function(){
+    this.element1.el().toggle();
+    this.element2.el().toggle();
+
+  }
+   Menu.prototype.hide = function() {
+      this.element1.el().show();
+      this.element2.el().hide();
+   }
+   enu.prototype.show = function() {
+      this.element1.el().show();
+      this.element2.el().hide();
+   }
+
+    </script>
+    
+</body>
+
+</html>

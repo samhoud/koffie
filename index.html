@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Wie gaat koffie halen?</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+	<div class="knoppie list-knoppie"><i class="glyphicon glyphicon-menu-down"></i></div>
+	<div class="knoppie reload-knoppie"><i class="glyphicon glyphicon-refresh"></i></div>
+	<div class="deelnemers">
+		<div class="form-inline halert-form">
+			<div class="form-group">
+				<div class="input-group">
+	     			<input type="text" class="form-control" name="nieuwe-haler" id="nieuwe-halert" placeholder="Naam"><div class="input-group-addon add-halert"><i class="glyphicon glyphicon-plus"></i></div>
+	    		</div>  
+			</div>
+		</div>
+		<p> &nbsp;</p>
+		<ul class="list-group deelnemers-list">
+		 
+		</ul>
+		<button type="button" class="btn btn-success klaar-ermee">Klaar</button>
+	</div>
+
+	<div class="audio"></div>
+	
+    <!-- Header -->
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1>Wie haalt koffie?</h1>
+            <h3 class="spannend">.....</h3>
+            <div class="halert">Bas</div>
+            <br>
+            <a id="#klikklik" class="btn haal-btn btn-dark btn-lg">Wie o wie?</a>
+        </div>
+    </header>
+
+    <!-- About -->
+   
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/underscore.js"></script>
+    <script type="text/javascript">
+
+    koffieHalers = ['Benjamin', 'Leo', 'Bas', 'Monique'];
+    debugMode = false;
+    soundFile = "audio/koffie.mp3";
+   
+
+    startButton     = new Element('.haal-btn');
+    reloadButton    = new Element('.reload-knoppie');
+    listButton      = new Element('.list-knoppie');
+    klaarButton     = new Element('.klaar-ermee');
+    addHalertButton = new Element('.add-halert');
+
+
+    halert          = new Element('.halert'); 
+    deelnemersForm  = new Element('.deelnemers');
+    deelnemersUl    = new Element('.deelnemers ul');
+    deelnemersList  = new Element('.deelnemers-list');
+    spannend        = new Element('.spannend');
+    nieuweHalert    = new Element('#nieuwe-halert');
+
+    sound           = new Sound(new Element('.audio'), soundFile);
+
+
+    menu            = new Menu(listButton, deelnemersForm);
+
+    UIManager       = new UserInterfaceManager(koffieHalers);
+
+
+
+    $(document).ready(function(){
+        startButton.click(function(){
+       		 //renderStart(); 
+           UIManager.start();           
+        });
+
+        listButton.click(function(){
+            menu.toggle();
+        });
+
+        klaarButton.click(function(){
+            menu.toggle();
+        });
+
+        reloadButton.click(function(){
+          UIManager.reload();
+        });
+
+
+        addHalertButton.click(function(){
+           	var naam = nieuweHalert.el().val();
+           	if(naam.length > 2)
+           	{
+           		UIManager.addHalert(naam);
+           		nieuweHalert.el().val("");
+           	  UIManager.renderHalerList();
+           	}
+        });
+
+
+        deelnemersList.el().on('click', '.remove-badge',function(){
+           var list_item = $(this).parent();
+           UIManager.removeHalert(list_item.data('lijstnummer'));
+           list_item.remove();
+        });
+        UIManager.init();
+    });
+
+   
+    function Sound(element, soundfileSrc) {
+        this.element = element;
+        this.src     = soundfileSrc;
+    }
+    
+    Sound.prototype.play = function(){
+      this.element.el().html("");
+      var embed = document.createElement("embed");
+      embed.id= "embed";
+      embed.setAttribute("src", this.src);
+      this.element.el().append(embed);
+  }
+
+  function Element(selector)
+  {
+    this.selector = selector;
+    this.element  = $(selector);
+  }
+
+   Element.prototype.el = function(){
+      return this.element;
+   }
+
+  Element.prototype.show = function(){
+    this.element.show();
+   }
+
+   Element.prototype.hide = function(){
+    this.element.hide();
+   }
+
+   Element.prototype.invisible = function(){
+      this.element.css('visibility', 'hidden');
+   }
+
+   Element.prototype.visible = function(){
+      this.element.css('visibility', 'visible');
+   }
+
+   Element.prototype.fadeIn = function(){
+    this.element.fadeIn();
+   }
+
+   Element.prototype.fadeOut = function(){
+    this.element.fadeOut();
+   }
+
+   Element.prototype.click = function(callback){
+       this.element.click(function(){
+          callback();
+       });
+   }
+
+  function Menu(element1, element2)
+  {
+    this.element1 = element1;
+    this.element2 = element2;
+  }
+
+  Menu.prototype.toggle = function(){
+    this.element1.el().toggle();
+    this.element2.el().toggle();
+
+  }
+   Menu.prototype.hide = function() {
+      this.element1.el().show();
+      this.element2.el().hide();
+   }
+  Menu.prototype.show = function() {
+      this.element1.el().show();
+      this.element2.el().hide();
+   }
+
+
+   function UserInterfaceManager(koffieHalers, debugMode){
+      this.halers = koffieHalers;
+      this.debugMode = debugMode;
+      this.animationDuration = 605;
+      this.animationTimes = 5;
+
+   }
+
+   UserInterfaceManager.prototype.init = function(){
+    this.renderHalerList();  
+   }
+
+   UserInterfaceManager.prototype.start = function(){
+      menu.hide();
+      startButton.hide();
+      sound.play();
+
+      this.spannendHe(this.getHalert());  
+   }
+
+   UserInterfaceManager.prototype.reload = function(){
+      halert.fadeOut();
+      spannend.show();
+      startButton.show();
+      reloadButton.hide();
+   }
+
+    UserInterfaceManager.prototype.getHalert = function(){
+      var haler = Math.floor((Math.random() * (this.halers.length)));
+      return this.halers[haler];
+    }
+
+
+    UserInterfaceManager.prototype.spannendHe = function(koffieHalert){
+        var count = 0;
+        for( var i =0; i <= this.animationTimes; i++)
+        {
+            times = this.animationTimes;
+            spannend.el().animate({opacity: 0}, {duration: this.animationDuration}).animate({opacity: 1}, this.animationDuration, function(){
+                if(count == times)
+                {
+                    spannend.el().fadeOut(function(){
+                      halert.el().text(koffieHalert);
+                      halert.fadeIn();
+                      reloadButton.show();
+                    });
+                }
+                count++;
+            });  
+        }
+    }
+
+   UserInterfaceManager.prototype.addHalert = function(naam){
+    this.halers.push(naam);   
+   }
+
+   UserInterfaceManager.prototype.halers = function(halers){
+    this.halers = halers;
+   }
+
+   UserInterfaceManager.prototype.removeHalert =  function(lijstnummer)
+   {
+     this.halers = _.reject(this.halers, function(name,key ){ return key == lijstnummer; });
+   }
+
+   UserInterfaceManager.prototype.renderHalerList = function(){
+    var list = deelnemersUl.el();
+    list.html("");
+
+    console.log(this.halers.length);
+    for (var i = 0; i < this.halers.length; i++) {
+      var list_item = this.renderItem(i, this.halers[i]);
+      list.append(list_item);
+    };
+   }
+
+   UserInterfaceManager.prototype.renderItem = function(key, naam){
+      return '<li class="list-group-item" data-lijstnummer="' + key +'"><span class="remove-badge"><i class="glyphicon glyphicon-trash"></i></span>'+ naam +'</li>';
+   }
+
+    </script>
+    
+</body>
+
+</html>
