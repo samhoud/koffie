@@ -316,11 +316,52 @@ hr.small {
 @media (max-width:768px) {
     .halert{
         font-size: 10em;
-    }  
+    }
+    .knoppie{
+        width: 30px;
+        height: 30px;
+        top: 0px;
+    }
+    .knoppie i{
+        font-size: 30px;
+    }
+    .list-knoppie{
+        left: 15px;
+    }
+
+    .reload-knoppie{
+        display: none;
+        left: 60px;
+    }
 }
+@media (max-width:600px) {
+    h1.appHeaderTekst{
+        font-size: 3em;
+    }
+    .halert{
+        font-size: 5em;
+    }
+    .deelnemers{
+        position: absolute;
+        top: 5px;
+        left: 2px;
+        width: 100%;
+        min-height: 400px;
+    }
 
-
-
+    .halert-form .form-group {
+        width: 100%;
+    }
+   .halert-form .input-group{
+        width: 100%;
+    }
+    .klaar-ermee{
+        width: 100%;
+    } 
+    .input-group-addon {
+        padding: 6px 22px;
+    }
+}
 /* Footer */
 
 footer {
