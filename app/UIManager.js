@@ -1,22 +1,28 @@
-function UserInterfaceManager(koffieHalers, debugMode){
-  this.halers = koffieHalers;
+function UserInterfaceManager(halers, debugMode){
+  this.halers = halers;
   this.debugMode = debugMode;
   this.animationDuration = 605;
   this.animationTimes = 5;
-
+  this.soundIsAvailable = false;
 }
 
 UserInterfaceManager.prototype.init = function(){
 this.renderHalerList();  
+this.renderTitels();
 }
 
 UserInterfaceManager.prototype.start = function(){
   menu.hide();
   startButton.hide();
-  sound.play();
+
+  if(this.soundIsAvailable){
+    sound.play();
+  }
 
   this.spannendHe(this.getHalert());  
 }
+
+
 
 UserInterfaceManager.prototype.reload = function(){
   halert.fadeOut();
@@ -31,7 +37,7 @@ UserInterfaceManager.prototype.getHalert = function(){
 }
 
 
-UserInterfaceManager.prototype.spannendHe = function(koffieHalert){
+UserInterfaceManager.prototype.spannendHe = function(gekozenHalert){
     var count = 0;
     for( var i =0; i <= this.animationTimes; i++)
     {
@@ -40,7 +46,7 @@ UserInterfaceManager.prototype.spannendHe = function(koffieHalert){
             if(count == times)
             {
                 spannend.el().fadeOut(function(){
-                  halert.el().text(koffieHalert);
+                  halert.el().text(gekozenHalert);
                   halert.fadeIn();
                   reloadButton.show();
                 });
@@ -58,6 +64,11 @@ UserInterfaceManager.prototype.halers = function(halers){
 this.halers = halers;
 }
 
+UserInterfaceManager.prototype.renderTitels = function(){
+  document.title = 'Wie gaat er ' + appNaam + ' halen?';
+  appHeaderTekst.el().text('Wie haalt ' + appNaam + '?');
+}
+
 UserInterfaceManager.prototype.removeHalert =  function(lijstnummer)
 {
  this.halers = _.reject(this.halers, function(name,key ){ return key == lijstnummer; });
@@ -67,7 +78,6 @@ UserInterfaceManager.prototype.renderHalerList = function(){
 var list = deelnemersUl.el();
 list.html("");
 
-console.log(this.halers.length);
 for (var i = 0; i < this.halers.length; i++) {
   var list_item = this.renderItem(i, this.halers[i]);
   list.append(list_item);
@@ -76,4 +86,16 @@ for (var i = 0; i < this.halers.length; i++) {
 
 UserInterfaceManager.prototype.renderItem = function(key, naam){
   return '<li class="list-group-item" data-lijstnummer="' + key +'"><span class="remove-badge"><i class="glyphicon glyphicon-trash"></i></span>'+ naam +'</li>';
+}
+
+UserInterfaceManager.prototype.soundAvailable = function(isAvailable){
+  this.soundIsAvailable = isAvailable;
+} 
+
+UserInterfaceManager.prototype.renderBackgroundImage = function(imageUrl){
+  $('.header').css('background', 'url(' + imageUrl + ') no-repeat center center scroll');
+  $('.header').css('-webkit-background-size', 'cover');
+  $('.header').css('-moz-background-size', 'cover');
+  $('.header').css('background-size', 'cover');
+  $('.header').css('-o-background-size', 'cover');
 }

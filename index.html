@@ -53,7 +53,7 @@
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h1>Wie haalt koffie?</h1>
+            <h1 class="appHeaderTekst">Wie haalt koffie?</h1>
             <h3 class="spannend">.....</h3>
             <div class="halert">Bas</div>
             <br>
@@ -73,14 +73,29 @@
     <script src="app/Sound.js"></script>
     <script src="app/Menu.js"></script>
     <script src="app/Element.js"></script>
-
+    <script src="app/Config.js"></script>
   
     <script type="text/javascript">
-
-    koffieHalers = ['Benjamin', 'Leo', 'Bas', 'Monique'];
     debugMode = false;
-    soundFile = "audio/koffie.mp3";
-   
+    defaultType = "koffie";
+
+    getConfigType = function(str) {
+      return (str || document.location.search).replace(/(^\?)/,'').split("&").map(function(n){
+        return n;
+      })[0];
+    }
+
+    var configType = getConfigType();
+
+    if(configType.length < 2){
+      configType = defaultType;
+    }
+    config = Config.loadConfig(configType);
+    appNaam            = config.naam;
+    halers             = config.defaultHalers;
+    soundFile          = config.soundFile;
+    backgroundImageUrl = config.backgroundImageUrl;
+
 
     startButton     = new Element('.haal-btn');
     reloadButton    = new Element('.reload-knoppie');
@@ -94,18 +109,27 @@
     deelnemersUl    = new Element('.deelnemers ul');
     deelnemersList  = new Element('.deelnemers-list');
     spannend        = new Element('.spannend');
+    appHeaderTekst  = new Element('.appHeaderTekst');
     nieuweHalert    = new Element('#nieuwe-halert');
-
-    sound           = new Sound(new Element('.audio'), soundFile);
-
 
     menu            = new Menu(listButton, deelnemersForm);
 
-    UIManager       = new UserInterfaceManager(koffieHalers);
+    UIManager       = new UserInterfaceManager(halers);
 
+    if(soundFile !== false){
+      sound           = new Sound(new Element('.audio'), soundFile);
+      UIManager.soundAvailable(true);
+    }else{
+      UIManager.soundAvailable(false);
+    }
 
+   
 
     $(document).ready(function(){
+      
+        UIManager.renderBackgroundImage(backgroundImageUrl);
+       
+
         startButton.click(function(){
        		 //renderStart(); 
            UIManager.start();           
@@ -142,15 +166,6 @@
         });
         UIManager.init();
     });
-
-   
-    
-
-  
-
-
-   
-
     </script>
     
 </body>
