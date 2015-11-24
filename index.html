@@ -74,9 +74,11 @@
     <script src="app/Menu.js"></script>
     <script src="app/Element.js"></script>
     <script src="app/Config.js"></script>
+    <script src="app/CheckinsLoader.js"></script>
   
     <script type="text/javascript">
     debugMode = false;
+    useCheckInApp = true;
     defaultType = "koffie";
 
     getConfigType = function(str) {
@@ -93,6 +95,7 @@
     config = Config.loadConfig(configType);
     appNaam            = config.naam;
     halers             = config.defaultHalers;
+
     soundFile          = config.soundFile;
     backgroundImageUrl = config.backgroundImageUrl;
 
@@ -115,6 +118,17 @@
     menu            = new Menu(listButton, deelnemersForm);
 
     UIManager       = new UserInterfaceManager(halers);
+
+    if(useCheckInApp === true) {
+        var loader = new Loader(Config.loadApi());
+        loader.get(function(halersLijst){
+            if(halersLijst !== false) {
+                UIManager.halers = halersLijst;
+                UIManager.renderHalerList();
+            }
+        });
+    }
+
 
     if(soundFile !== false){
       sound           = new Sound(new Element('.audio'), soundFile);
